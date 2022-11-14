@@ -1,0 +1,127 @@
+managed;
+//strict ( 2 ); //Uncomment this line in order to enable strict mode 2. The strict mode has two variants (strict(1), strict(2)) and is prerequisite to be future proof regarding syntax and to be able to release your BO.
+
+define behavior for Z_I_TRAVEL_2985 alias Travel
+implementation in class zbp_i_travel_2985 unique
+persistent table ztb_travel_2985
+with additional save
+lock master
+authorization master ( instance )
+etag master last_changed_at
+{
+  // Administrative fields: read only
+  field ( readonly ) last_changed_at, last_changed_by, created_by, created_at;
+  // Mandatory fields that are required to create a travel
+  field ( mandatory : create ) travel_id, agency_id, overall_status, booking_fee, currency_code;
+  // Dynamic field control
+  field ( features : instance ) travel_id, overall_status;
+
+  create;
+  update;
+  delete;
+
+  //Validations
+  validation validateCustomer on save { create; field customer_id; }
+  validation validateDates on save { create; field begin_date, end_date; }
+  validation validateStatus on save { create; field overall_status; }
+
+  //Actions
+  action ( features : instance ) acceptTravel result [1] $self;
+  action ( features : instance ) rejectTravel result [1] $self;
+  action createTravelByTemplate result [1] $self;
+
+  association _Booking { create ( features : instance ); }
+
+  mapping for ztb_travel_2985
+  {
+    travel_id = travel_id;
+    agency_id = agency_id;
+    customer_id = customer_id;
+    begin_date = begin_date;
+    end_date = end_date;
+    booking_fee = booking_fee;
+    total_price = total_price;
+    currency_code = currency_code;
+    description = description;
+    overall_status = overall_status;
+    created_by = created_by;
+    created_at = created_at;
+    last_changed_by = last_changed_by;
+    last_changed_at = last_changed_at;
+  }
+
+}
+
+define behavior for Z_I_BOOKING_2985 alias Booking
+implementation in class zbp_i_booking_2985 unique
+persistent table ztb_booking_2985
+lock dependent by _Travel
+authorization dependent by _Travel
+etag master last_changed_at
+{
+  // Read only fields
+  field ( readonly ) travel_id;
+  // Mandatory fields
+  field ( mandatory : create ) booking_id, carrier_id, connection_id, flight_date, booking_status;
+
+  update;
+  delete;
+
+  //Validations
+  validation validateStatus on save { create; field booking_status; }
+
+  //Determinations
+  determination calculateTotalFlightPrice on modify { field flight_price, currency_code; }
+
+  association _Travel;
+  association _BookingSupplement { create ( features : instance ); }
+
+  mapping for ztb_booking_2985
+  {
+    travel_id = travel_id;
+    booking_id = booking_id;
+    booking_date = booking_date;
+    customer_id = customer_id;
+    carrier_id = carrier_id;
+    connection_id = connection_id;
+    flight_date = flight_date;
+    flight_price = flight_price;
+    currency_code = currency_code;
+    booking_status = booking_status;
+    last_changed_at = last_changed_at;
+  }
+}
+
+define behavior for Z_I_BOOKSUP_2985 alias Supplement
+implementation in class zbp_i_booksup_2985 unique
+with unmanaged save
+lock dependent by _Travel
+authorization dependent by _Travel
+etag master last_changed_at
+{
+  // Read only fields
+  field ( readonly ) travel_id, booking_id;
+  // Mandatory fields
+  field ( mandatory : create ) supplement_id, price;
+
+  update;
+  delete;
+
+  //Determinations
+  determination calculateTotalSupplimPrice on modify { field price, currency_code; }
+
+  association _Travel;
+  association _Booking;
+
+  mapping for ztb_booksup_2985
+  {
+    travel_id = travel_id;
+    booking_id = booking_id;
+    booking_supplement_id = booking_supplement_id;
+    supplement_id = supplement_id;
+    price = price;
+    currency_code = currency_code;
+    last_changed_at = last_changed_at;
+  }
+
+}
