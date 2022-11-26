@@ -155,7 +155,7 @@ CLASS ZCL_AUX_TRAVEL_DET_2985 IMPLEMENTATION.
 
 *   Actualizamos la capa de persistencia
     IF NOT lt_read_travel[] IS INITIAL.
-      MODIFY ENTITIES OF z_i_travel_log
+      MODIFY ENTITIES OF z_i_travel_2985
                   ENTITY Travel
        UPDATE FROM VALUE #( FOR ls_travel_bo IN lt_read_travel (
                                 travel_id            = ls_travel_bo-travel_id

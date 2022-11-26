@@ -1,0 +1,4 @@
+@EndUserText.label: 'Service Definition - HC - Master Data'
+define service ZSD_HC_MASTER_2985 {
+  expose Z_C_HC_MASTER_2985 as HCMaster;
+}

@@ -1,0 +1,15 @@
+unmanaged implementation in class zbp_i_hc_master_2985 unique;
+
+define behavior for Z_I_HC_MASTER_2985 alias HCMaster
+//late numbering
+//lock master
+//authorization master ( instance )
+//etag master <field_name>
+{
+  field ( readonly ) e_number;
+  field ( mandatory : create ) e_name;
+
+  create;
+  update;
+  delete;
+}
