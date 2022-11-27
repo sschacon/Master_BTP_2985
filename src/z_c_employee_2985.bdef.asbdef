@@ -1,0 +1,11 @@
+projection;
+use draft;
+
+
+define behavior for Z_C_EMPLOYEE_2985 alias Employee
+use etag
+{
+  use create;
+  use update;
+  use delete;
+}

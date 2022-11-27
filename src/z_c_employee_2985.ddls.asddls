@@ -1,8 +1,8 @@
-@EndUserText.label: 'Consumption - HCM - Master Data'
+@EndUserText.label: 'Consumption - Employee'
 @AccessControl.authorizationCheck: #CHECK
 @Metadata.allowExtensions: true
-define root view entity Z_C_HC_MASTER_2985
-  as projection on Z_I_HC_MASTER_2985
+define root view entity Z_C_EMPLOYEE_2985
+  as projection on Z_I_EMPLOYEE_2985
 {
 //      @ObjectModel.text.element: ['EmployeeName']
   key e_number       as EmployeeNumber,
